@@ -1,0 +1,202 @@
+----------------
+-- Atividades --
+----------------
+
+SELECT * FROM Alunos; -- lista todos os alunos cadastrados
+
+SELECT nome FROM Alunos; -- lista o nome dos alunos
+
+SELECT * FROM Cursos; -- lista todos os cursos
+
+SELECT * FROM Alunos -- lista todos os alunos que moram em são paulo
+WHERE cidade = 'São Paulo';
+
+SELECT * FROM Alunos -- lista alunos com idade maior que 20
+WHERE idade > 20;
+
+SELECT * FROM Cursos -- lista cursos com carga horária maior que 50
+WHERE carga_horaria > 50;
+
+SELECT nome, idade FROM Alunos -- lista alunos com idade de 18 entre 22
+WHERE idade BETWEEN 18 AND 22;
+
+SELECT nome, cidade FROM Alunos -- lista todos os alunos que moram em curitiba
+WHERE cidade = 'Curitiba';
+
+SELECT nome, idade FROM Alunos -- lista alunos com idade menor que 21
+WHERE idade < 21;
+
+SELECT id_matricula FROM Matriculas; -- lista todas as matrículas cadastradas
+
+-------------------------------
+-- Atividades intermediárias --
+-------------------------------
+
+SELECT a.nome, m.nota -- lista alunos que tiveram nota acima de 8
+FROM Matriculas AS m
+JOIN Alunos AS a ON a.id_aluno = m.id_aluno
+WHERE nota > 8;
+
+SELECT c.nome_curso, c.carga_horaria -- lista cursos com carga horária igual a 80
+FROM Cursos AS c
+WHERE c.carga_horaria = 80;
+
+SELECT a.nome, m.faltas -- lista alunos que tiveram faltas acima de 5
+FROM Matriculas AS m
+JOIN Alunos AS a ON a.id_aluno = m.id_aluno
+WHERE faltas > 5;
+
+SELECT nome, cidade
+FROM Alunos -- lista todos os alunos que não moram em são paulo
+WHERE NOT cidade = 'São Paulo';
+
+SELECT nome -- lista alunos que começam com a letra "a"
+FROM Alunos
+WHERE nome LIKE 'A%';
+
+SELECT nome -- lista alunos que terminam com a letra "a"
+FROM Alunos
+WHERE nome LIKE '%A';
+
+SELECT nome_curso -- lista cursos cujo nome tenha "dados"
+FROM Cursos
+WHERE nome_curso LIKE '%dados%';
+
+SELECT id_matricula
+FROM Matriculas -- lista matrículas com nota entre 7 e 9
+WHERE nota BETWEEN 7 AND 9;
+
+SELECT nome, idade
+FROM Alunos -- lista alunos que possuem exatamente 20 anos
+WHERE idade = 20;
+
+SELECT nome_curso, carga_horaria -- lista cursos com carga horária menor ou igual 60
+FROM Cursos
+WHERE carga_horaria <= 60;
+
+-----------------------------
+-- Atividades com GROUP BY --
+-----------------------------
+
+SELECT cidade, COUNT(*) AS quantidade_alunos -- lista quantidade de alunos em cada cidade
+FROM Alunos
+GROUP BY cidade;
+
+SELECT cidade, AVG(idade) AS media_idade -- lista média de idade de alunos por cidade
+FROM Alunos
+GROUP BY cidade;
+
+SELECT c.nome_curso, COUNT(m.id_matricula) AS quantidade_matriculas -- quantidade de matrículas por cursos
+FROM Matriculas AS m
+JOIN Cursos AS c
+ON m.id_curso = c.id_curso
+GROUP BY c.nome_curso;
+
+SELECT c.nome_curso, AVG(m.nota) AS media_notas -- lista média das notas por cursos
+FROM Matriculas AS m
+JOIN Cursos AS c
+ON m.id_curso = c.id_curso
+GROUP BY c.nome_curso;
+
+SELECT c.nome_curso, SUM(m.faltas) AS total_faltas -- lista total de faltas por cursos
+FROM Matriculas AS m
+JOIN Cursos AS c
+ON m.id_curso = c.id_curso
+GROUP BY c.nome_curso;
+
+SELECT c.nome_curso, MAX(m.nota) AS maior_nota -- lista a maior nota de cada curso
+FROM Matriculas AS m
+JOIN Cursos AS c
+ON m.id_curso = c.id_curso
+GROUP BY c.nome_curso;
+
+SELECT c.nome_curso, MIN(m.nota) AS menor_nota -- lista a menor nota de cada curso
+FROM Matriculas AS m
+JOIN Cursos AS c
+ON m.id_curso = c.id_curso
+GROUP BY c.nome_curso;
+
+SELECT A.nome, SUM(M.faltas) AS total_faltas -- Lista soma total de Faltas agrupadas por aluno
+FROM Matriculas AS M
+JOIN Alunos AS A
+ON M.id_aluno = A.id_aluno
+GROUP BY A.nome;
+
+SELECT A.nome, AVG(M.nota) AS media_notas -- Lista a Média de notas agrupadas por aluno
+FROM Matriculas AS M
+JOIN Alunos AS A
+ON M.id_aluno = A.id_aluno
+GROUP BY A.nome;
+
+SELECT idade, COUNT(*) AS quantidade_alunos -- Lista número de alunos por faixa-etária
+FROM Alunos
+GROUP BY idade;
+
+--------------------------
+-- Atividades Avançadas --
+--------------------------
+
+SELECT cidade, COUNT(*) AS quantidade_alunos -- Lista Cidades que possuem mais de 2 Alunos
+FROM Alunos
+GROUP BY cidade
+HAVING COUNT(*) > 2;
+
+SELECT C.nome_curso, AVG(M.nota) AS media_notas -- Lista cursos cuja média de notas é maior que 8
+FROM Matriculas AS M
+JOIN Cursos AS C
+ON M.id_curso = C.id_curso
+GROUP BY C.nome_curso
+HAVING AVG(M.nota) > 8;
+
+SELECT C.nome_curso, COUNT(M.id_matricula) AS quantidade -- Liste o cursos que possuem mais de 2 matrículas
+FROM Matriculas AS M
+JOIN Cursos AS C
+ON M.id_curso = C.id_curso
+GROUP BY C.nome_curso
+HAVING COUNT(M.id_matricula) > 2;
+
+SELECT A.nome, SUM(M.faltas) AS total_faltas -- Lista os alunos cuja soma de faltas  seja maior que 5
+FROM Matriculas AS M
+JOIN Alunos AS A
+ON M.id_aluno = A.id_aluno
+GROUP BY A.nome
+HAVING SUM(M.faltas) > 5;
+
+SELECT C.nome_curso, MIN(M.nota) AS menor_nota -- Lista os cursos cuja menor nota seja maior que 6
+FROM Matriculas AS M
+JOIN Cursos AS C
+ON M.id_curso = C.id_curso
+GROUP BY C.nome_curso
+HAVING MIN(M.nota) > 6;
+
+SELECT nome_curso, carga_horaria -- Lista cursos ordenados pela carga horária em ordem decrescente
+FROM Cursos
+ORDER BY carga_horaria DESC;
+
+SELECT nome, idade -- Lista cursos ordenados pela idade maior para menor
+FROM Alunos
+ORDER BY idade DESC;
+
+SELECT C.nome_curso, AVG(M.nota) AS media_notas -- Lista média de notas por curso ordenada da maior para menor
+FROM Matriculas AS M
+JOIN Cursos AS C
+ON M.id_curso = C.id_curso
+GROUP BY C.nome_curso
+ORDER BY media_notas DESC;
+
+SELECT cidade, COUNT(*) AS quantidade_alunos -- Lista as cidades ordenadas por quantidade de Alunos
+FROM Alunos
+GROUP BY cidade
+ORDER BY quantidade_alunos DESC;
+
+SELECT A.nome, AVG(M.nota) AS media_notas
+FROM Alunos AS A
+JOIN Matriculas AS M
+ON A.id_aluno = M.id_aluno
+GROUP BY A.id_aluno, A.nome
+HAVING AVG(M.nota) > 7
+ORDER BY media_notas DESC;
+
+select nome 
+FROM Alunos
+where idade = (select max(idade) from Alunos);
