@@ -1,0 +1,2 @@
+CREATE DATABASE hp;
+USE hp;
